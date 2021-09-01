@@ -99,13 +99,13 @@ int main (int argc, char **argv)
 
   long samples = 0;
 
-  enum dmode dm = DUMP_CONTINUOUS;
-  // enum dmode dm = DUMP_FINAL;
+  // enum dmode dm = DUMP_CONTINUOUS;
+  enum dmode dm = DUMP_FINAL;
 
-  if (argc>1) frequency = atoi(argv[1]);
-  if (argc>2) sampling = atoi(argv[2]);
-  if (argc>3) gain = atoi(argv[3]);
-  if (argc>4) ms = atoi(argv[4]);
+  if (argc>1) frequency = atol(argv[1]);
+  if (argc>2) sampling = atol(argv[2]);
+  if (argc>3) gain = atol(argv[3]);
+  if (argc>4) ms = atol(argv[4]);
 
   printf("# frequency %ld\n", frequency);
   printf("# sampling %ld\n", sampling);
@@ -156,7 +156,7 @@ int main (int argc, char **argv)
 
   double sum2 = receive(ctx, samples, dm, fdo);
 
-  if (dm == DUMP_FINAL) printf("%ld %lg\n", frequency, pow2db(sum2));
+  if (dm == DUMP_FINAL) printf("%lu %lg\n", frequency, pow2db(sum2));
 
   close(fdo);
 
