@@ -1,5 +1,7 @@
 #include <iio.h>
 
+#include <string.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -100,7 +102,9 @@ int main (int argc, char **argv)
   long samples = 0;
 
   // enum dmode dm = DUMP_CONTINUOUS;
-  enum dmode dm = DUMP_FINAL;
+  enum dmode dm;
+  if (strstr(argv[0], "plutorecg")) dm = DUMP_FINAL;
+  else dm = DUMP_CONTINUOUS;
 
   if (argc>1) frequency = atol(argv[1]);
   if (argc>2) sampling = atol(argv[2]);
