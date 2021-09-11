@@ -23,6 +23,8 @@ gcc -Wall -g plutorec.c -liio -lm -o plutorec && ./plutorec 446093750 3000000 69
 
 double pow2db(double x) { return 10. * log(x) / log(10.); }
 
+double sqr(double x) { return x*x; }
+
 enum dmode {
   DUMP_FINAL,
   DUMP_CONTINUOUS,
@@ -69,16 +71,16 @@ double receive(struct iio_context *ctx, long ns, enum dmode dm, int fdo)
       int16_t i = ((int16_t*)p_dat)[0]; // Real (I)
       int16_t q = ((int16_t*)p_dat)[1]; // Imag (Q)
       /* Process here */
-      mini = i>mini?i:mini; minq = q>minq?q:minq;
+      mini = i<mini?i:mini; minq = q<minq?q:minq;
       maxi = i>maxi?i:maxi; maxq = q>maxq?q:maxq;
       //i = ((i&0xff)<<8) | ((i&0xff00)>>8);
       //q = ((q&0xff)<<8) | ((q&0xff00)>>8);
-      sum2 += i*i + q*q;
+      sum2 += sqr(i) + sqr(q);
       buf[2*ic] = i;
       buf[2*ic+1] = q;
     }
     write(fdo, buf, 2*2*bsize);
-    if (dm == DUMP_CONTINUOUS) printf("%d %lg %lg\n", 2*c, sum2, pow2db(sum2));
+    if (dm == DUMP_CONTINUOUS) printf("%d %lg %lg\n", 2*(c+1)*bsize, sum2, pow2db(sum2));
   }
   printf("# mini %ld\n# minq %ld\n", mini, minq);
   printf("# maxi %ld\n# maxq %ld\n", maxi, maxq);
