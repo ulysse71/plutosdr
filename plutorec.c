@@ -80,7 +80,7 @@ double receive(struct iio_context *ctx, long ns, enum dmode dm, int fdo)
       buf[2*ic+1] = q;
     }
     write(fdo, buf, 2*2*bsize);
-    if (dm == DUMP_CONTINUOUS) printf("%d %lg %lg\n", 2*(c+1)*bsize, sum2, pow2db(sum2));
+    if (dm == DUMP_CONTINUOUS) printf("%d %.10lg %.10lg\n", 2*(c+1)*bsize, sum2, pow2db(sum2));
   }
   printf("# mini %ld\n# minq %ld\n", mini, minq);
   printf("# maxi %ld\n# maxq %ld\n", maxi, maxq);
