@@ -80,6 +80,7 @@ int main (int argc, char **argv)
   struct iio_device *dds;
   struct iio_device *phy;
 
+  char *filename = NULL;
   long frequency = 10000000,
        sampling = 3000000,
        atten = 10,
@@ -87,10 +88,11 @@ int main (int argc, char **argv)
 
   long samples = 0;
 
-  if (argc>1) frequency = atoi(argv[1]);
-  if (argc>2) sampling = atoi(argv[2]);
-  if (argc>3) atten = atoi(argv[3]);
-  if (argc>4) ms = atoi(argv[4]);
+  if (argc>1) filename = argv[1];
+  if (argc>2) frequency = atoi(argv[2]);
+  if (argc>3) sampling = atoi(argv[3]);
+  if (argc>4) atten = atoi(argv[4]);
+  if (argc>5) ms = atoi(argv[5]);
 
   printf("# frequency %ld\n", frequency);
   printf("# sampling %ld\n", sampling);
@@ -102,7 +104,7 @@ int main (int argc, char **argv)
   int ret = 0;
 
   if (argc>5) {
-    ctx = iio_create_context_from_uri(argv[5]);
+    ctx = iio_create_context_from_uri(argv[6]);
   }
   else {
     //ctx = iio_create_context_from_uri("local:");
@@ -144,7 +146,7 @@ int main (int argc, char **argv)
       "raw", 1);
   printf("# ret raw %d\n", ret);
 
-  int fdi = open("input.iq",  O_RDONLY);
+  int fdi = open(filename,  O_RDONLY);
 
   send(ctx, samples, fdi);
 

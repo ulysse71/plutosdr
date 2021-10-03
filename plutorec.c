@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 /* build and use example
-gcc -Wall -g plutorec.c -liio -lm -o plutorec && ./plutorec 446093750 3000000 69 100 # && mks.opt output.iq -type bin 1 s16le  # exectest
+gcc -Wall -g plutorec.c -liio -lm -o plutorec && ./plutorec output.iq 446093750 3000000 69 100 # && mks.opt output.iq -type bin 1 s16le  # exectest
  */
 
 #define IIO_ENSURE(expr) { \
@@ -52,7 +52,7 @@ double receive(struct iio_context *ctx, long ns, enum dmode dm, int fdo)
     exit(255);
   }
 
-  int ic=0;
+  int ic=0, res=0;
   long maxi=0, maxq=0;
   long mini=0, minq=0;
   double sum2=0.;
@@ -79,7 +79,8 @@ double receive(struct iio_context *ctx, long ns, enum dmode dm, int fdo)
       buf[2*ic] = i;
       buf[2*ic+1] = q;
     }
-    write(fdo, buf, 2*2*bsize);
+    res = write(fdo, buf, 2*2*bsize);
+    if (res != 2*2*bsize) printf("  !! warning insufficient number of bytes written, output may be truncated\n");
     if (dm == DUMP_CONTINUOUS) printf("%d %.10lg %.10lg\n", 2*(c+1)*bsize, sum2, pow2db(sum2));
   }
   printf("# mini %ld\n# minq %ld\n", mini, minq);
@@ -96,6 +97,7 @@ int main (int argc, char **argv)
   struct iio_context *ctx;
   struct iio_device *phy;
 
+  char *filename = NULL;
   long frequency = 10000000,
        sampling = 240000,
        gain = 69,
@@ -108,10 +110,11 @@ int main (int argc, char **argv)
   if (strstr(argv[0], "plutorecg")) dm = DUMP_FINAL;
   else dm = DUMP_CONTINUOUS;
 
-  if (argc>1) frequency = atol(argv[1]);
-  if (argc>2) sampling = atol(argv[2]);
-  if (argc>3) gain = atol(argv[3]);
-  if (argc>4) ms = atol(argv[4]);
+  if (argc>1) filename = argv[1];
+  if (argc>2) frequency = atol(argv[2]);
+  if (argc>3) sampling = atol(argv[3]);
+  if (argc>4) gain = atol(argv[4]);
+  if (argc>5) ms = atol(argv[5]);
 
   printf("# frequency %ld\n", frequency);
   printf("# sampling %ld\n", sampling);
@@ -123,7 +126,7 @@ int main (int argc, char **argv)
   int ret = 0;
 
   if (argc>5) {
-    ctx = iio_create_context_from_uri(argv[5]);
+    ctx = iio_create_context_from_uri(argv[6]);
   }
   else {
     //ctx = iio_create_context_from_uri("local:");
@@ -158,7 +161,7 @@ int main (int argc, char **argv)
       "hardwaregain", gain);
   printf("# ret gain %d\n", ret);
 
-  int fdo = open("output.iq",  O_WRONLY|O_CREAT|O_TRUNC, 0644);
+  int fdo = open(filename,  O_WRONLY|O_CREAT|O_TRUNC, 0644);
 
   double sum2 = receive(ctx, samples, dm, fdo);
 
