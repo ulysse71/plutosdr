@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 /* build and use example
-gcc -Wall -g plutosend.c -liio -lm -o plutosend && ./plutosend 10000000 # exectest
+gcc -Wall -g plutosend.c -liio -lm -o plutosend && ./plutosend input.iq 446093750 10000000 0 1000 # exectest
  */
 
 #define IIO_ENSURE(expr) { \
