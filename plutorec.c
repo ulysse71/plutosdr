@@ -125,7 +125,7 @@ int main (int argc, char **argv)
 
   int ret = 0;
 
-  if (argc>5) {
+  if (argc>6) {
     ctx = iio_create_context_from_uri(argv[6]);
   }
   else {
