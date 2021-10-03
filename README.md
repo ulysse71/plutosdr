@@ -3,12 +3,19 @@ Pluto SDR RX &amp; TX
 ------
 
 
-* Build
+* Build  
+```
 make
+```
 
-
-* Usage
+* Usage  
+To receive:  
+```
 plutorec <iqfile> <frequency> <sampling> <gain> <time_in_ms>
-plutosend <iqfile> <frequency> <sampling> <gain> <time_in_ms>
+```
 
+To send:  
+```
+plutosend <iqfile> <frequency> <sampling> <gain> <time_in_ms>
+```
 
